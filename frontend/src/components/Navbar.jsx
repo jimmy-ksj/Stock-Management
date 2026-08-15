@@ -1,0 +1,3 @@
+import{NavLink,useNavigate}from"react-router-dom";import{LayoutDashboard,Package,Tags,Truck,ShoppingCart,LogOut}from"lucide-react";
+export default function Navbar(){const nav=useNavigate();const logout=()=>{localStorage.clear();nav("/");};return <aside className="sidebar"><div className="brand">📦 Stock<span>Pro</span></div><nav>{[
+["/dashboard","Dashboard",LayoutDashboard],["/products","Products",Package],["/categories","Categories",Tags],["/suppliers","Suppliers",Truck],["/sales","Sales",ShoppingCart]].map(([to,t,I])=><NavLink key={to} to={to} className={({isActive})=>isActive?"active":""}><I size={18}/>{t}</NavLink>)}</nav><button className="logout" onClick={logout}><LogOut size={18}/>Logout</button></aside>;}
