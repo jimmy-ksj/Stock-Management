@@ -1,4 +1,3 @@
-```jsx
 import {
   NavLink,
   useNavigate,
@@ -16,35 +15,7 @@ import {
 export default function Navbar() {
   const navigate = useNavigate();
 
-  const menuItems = [
-    {
-      path: "/dashboard",
-      label: "Dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      path: "/products",
-      label: "Products",
-      icon: Package,
-    },
-    {
-      path: "/categories",
-      label: "Categories",
-      icon: Tags,
-    },
-    {
-      path: "/suppliers",
-      label: "Suppliers",
-      icon: Truck,
-    },
-    {
-      path: "/sales",
-      label: "Sales",
-      icon: ShoppingCart,
-    },
-  ];
-
-  const handleLogout = () => {
+  const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
@@ -56,70 +27,48 @@ export default function Navbar() {
   return (
     <aside className="sidebar">
 
-      {/* =================================================
-          BRAND
-      ================================================= */}
       <div className="brand">
-        <span className="brand-icon">📦</span>
-
-        <span className="brand-text">
-          Stock
-          <span className="brand-highlight">
-            Pro
-          </span>
-        </span>
+         Stock<span>Pro</span>
       </div>
 
-      {/* =================================================
-          NAVIGATION
-      ================================================= */}
-      <nav className="sidebar-nav">
+      <nav>
 
-        {menuItems.map((item) => {
-          const Icon = item.icon;
+        <NavLink to="/dashboard">
+          <LayoutDashboard size={18} />
+          Dashboard
+        </NavLink>
 
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.path === "/dashboard"}
-              className={({ isActive }) =>
-                `nav-link ${
-                  isActive ? "active" : ""
-                }`
-              }
-            >
-              <Icon size={19} />
+        <NavLink to="/products">
+          <Package size={18} />
+          Products
+        </NavLink>
 
-              <span>
-                {item.label}
-              </span>
-            </NavLink>
-          );
-        })}
+        <NavLink to="/categories">
+          <Tags size={18} />
+          Categories
+        </NavLink>
+
+        <NavLink to="/suppliers">
+          <Truck size={18} />
+          Suppliers
+        </NavLink>
+
+        <NavLink to="/sales">
+          <ShoppingCart size={18} />
+          Sales
+        </NavLink>
 
       </nav>
 
-      {/* =================================================
-          LOGOUT
-      ================================================= */}
-      <div className="sidebar-bottom">
-
-        <button
-          type="button"
-          className="logout"
-          onClick={handleLogout}
-        >
-          <LogOut size={19} />
-
-          <span>
-            Logout
-          </span>
-        </button>
-
-      </div>
+      <button
+        type="button"
+        className="logout"
+        onClick={logout}
+      >
+        <LogOut size={18} />
+        Logout
+      </button>
 
     </aside>
   );
 }
-```
