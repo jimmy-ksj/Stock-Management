@@ -1,3 +1,4 @@
+```jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
@@ -7,40 +8,74 @@ import Categories from "./pages/Categories";
 import Suppliers from "./pages/Suppliers";
 import Sales from "./pages/Sales";
 
-/* Protected pages */
+/*
+  Protected Route
+
+  Pages that need authentication:
+  Products
+  Categories
+  Suppliers
+  Sales
+*/
 function Protected({ children }) {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
+}
+
+/*
+  Public Login Route
+
+  If user is already logged in,
+  don't show Login again.
+*/
+function LoginRoute() {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <Login />;
 }
 
 export default function App() {
   return (
     <Routes>
 
-      {/* WEBSITE HOME → DASHBOARD */}
+      {/* =====================================================
+          HOME
+          Website opens directly on Dashboard
+      ===================================================== */}
       <Route
         path="/"
         element={<Navigate to="/dashboard" replace />}
       />
 
-      {/* LOGIN */}
+      {/* =====================================================
+          LOGIN
+      ===================================================== */}
       <Route
         path="/login"
-        element={<Login />}
+        element={<LoginRoute />}
       />
 
-      {/* DASHBOARD - PUBLIC */}
+      {/* =====================================================
+          DASHBOARD
+          Public route
+      ===================================================== */}
       <Route
         path="/dashboard"
         element={<Dashboard />}
       />
 
-      {/* PRODUCTS */}
+      {/* =====================================================
+          PRODUCTS
+      ===================================================== */}
       <Route
         path="/products"
         element={
@@ -50,7 +85,9 @@ export default function App() {
         }
       />
 
-      {/* CATEGORIES */}
+      {/* =====================================================
+          CATEGORIES
+      ===================================================== */}
       <Route
         path="/categories"
         element={
@@ -60,7 +97,9 @@ export default function App() {
         }
       />
 
-      {/* SUPPLIERS */}
+      {/* =====================================================
+          SUPPLIERS
+      ===================================================== */}
       <Route
         path="/suppliers"
         element={
@@ -70,7 +109,9 @@ export default function App() {
         }
       />
 
-      {/* SALES */}
+      {/* =====================================================
+          SALES
+      ===================================================== */}
       <Route
         path="/sales"
         element={
@@ -80,7 +121,9 @@ export default function App() {
         }
       />
 
-      {/* UNKNOWN URL */}
+      {/* =====================================================
+          UNKNOWN ROUTES
+      ===================================================== */}
       <Route
         path="*"
         element={<Navigate to="/dashboard" replace />}
@@ -89,3 +132,4 @@ export default function App() {
     </Routes>
   );
 }
+```
