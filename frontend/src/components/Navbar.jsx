@@ -1,5 +1,9 @@
 ```jsx
-import { NavLink, useNavigate } from "react-router-dom";
+import {
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
+
 import {
   LayoutDashboard,
   Package,
@@ -15,27 +19,27 @@ export default function Navbar() {
   const menuItems = [
     {
       path: "/dashboard",
-      name: "Dashboard",
+      label: "Dashboard",
       icon: LayoutDashboard,
     },
     {
       path: "/products",
-      name: "Products",
+      label: "Products",
       icon: Package,
     },
     {
       path: "/categories",
-      name: "Categories",
+      label: "Categories",
       icon: Tags,
     },
     {
       path: "/suppliers",
-      name: "Suppliers",
+      label: "Suppliers",
       icon: Truck,
     },
     {
       path: "/sales",
-      name: "Sales",
+      label: "Sales",
       icon: ShoppingCart,
     },
   ];
@@ -44,7 +48,7 @@ export default function Navbar() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    navigate("/", {
+    navigate("/login", {
       replace: true,
     });
   };
@@ -52,13 +56,23 @@ export default function Navbar() {
   return (
     <aside className="sidebar">
 
-      {/* BRAND */}
+      {/* =================================================
+          BRAND
+      ================================================= */}
       <div className="brand">
         <span className="brand-icon">📦</span>
-        Stock<span>Pro</span>
+
+        <span className="brand-text">
+          Stock
+          <span className="brand-highlight">
+            Pro
+          </span>
+        </span>
       </div>
 
-      {/* MENU */}
+      {/* =================================================
+          NAVIGATION
+      ================================================= */}
       <nav className="sidebar-nav">
 
         {menuItems.map((item) => {
@@ -68,27 +82,42 @@ export default function Navbar() {
             <NavLink
               key={item.path}
               to={item.path}
+              end={item.path === "/dashboard"}
               className={({ isActive }) =>
-                `nav-item ${isActive ? "active" : ""}`
+                `nav-link ${
+                  isActive ? "active" : ""
+                }`
               }
             >
-              <Icon size={18} />
-              <span>{item.name}</span>
+              <Icon size={19} />
+
+              <span>
+                {item.label}
+              </span>
             </NavLink>
           );
         })}
 
       </nav>
 
-      {/* LOGOUT */}
-      <button
-        type="button"
-        className="logout"
-        onClick={handleLogout}
-      >
-        <LogOut size={18} />
-        <span>Logout</span>
-      </button>
+      {/* =================================================
+          LOGOUT
+      ================================================= */}
+      <div className="sidebar-bottom">
+
+        <button
+          type="button"
+          className="logout"
+          onClick={handleLogout}
+        >
+          <LogOut size={19} />
+
+          <span>
+            Logout
+          </span>
+        </button>
+
+      </div>
 
     </aside>
   );
