@@ -1,4 +1,4 @@
-```jsx
+
 import { useEffect, useMemo, useState } from "react";
 import api from "../services/api";
 import Layout from "../components/Layout";
