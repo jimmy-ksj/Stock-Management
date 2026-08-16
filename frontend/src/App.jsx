@@ -8,128 +8,118 @@ import Categories from "./pages/Categories";
 import Suppliers from "./pages/Suppliers";
 import Sales from "./pages/Sales";
 
-/*
-  Protected Route
-
-  Pages that need authentication:
-  Products
-  Categories
-  Suppliers
-  Sales
-*/
-function Protected({ children }) {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-}
-
-/*
-  Public Login Route
-
-  If user is already logged in,
-  don't show Login again.
-*/
-function LoginRoute() {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  return <Login />;
-}
-
 export default function App() {
   return (
     <Routes>
 
-      {/* =====================================================
-          HOME
-          Website opens directly on Dashboard
-      ===================================================== */}
+      {/* HOME */}
       <Route
         path="/"
         element={<Navigate to="/dashboard" replace />}
       />
 
-      {/* =====================================================
-          LOGIN
-      ===================================================== */}
+      {/* LOGIN */}
       <Route
         path="/login"
-        element={<LoginRoute />}
+        element={<Login />}
       />
 
-      {/* =====================================================
-          DASHBOARD
-          Public route
-      ===================================================== */}
+      {/* DASHBOARD */}
       <Route
         path="/dashboard"
         element={<Dashboard />}
       />
 
-      {/* =====================================================
-          PRODUCTS
-      ===================================================== */}
+      {/* PRODUCTS */}
       <Route
         path="/products"
-        element={
-          <Protected>
-            <Products />
-          </Protected>
-        }
+        element={<Products />}
       />
 
-      {/* =====================================================
-          CATEGORIES
-      ===================================================== */}
+      {/* CATEGORIES */}
       <Route
         path="/categories"
-        element={
-          <Protected>
-            <Categories />
-          </Protected>
-        }
+        element={<Categories />}
       />
 
-      {/* =====================================================
-          SUPPLIERS
-      ===================================================== */}
+      {/* SUPPLIERS */}
       <Route
         path="/suppliers"
-        element={
-          <Protected>
-            <Suppliers />
-          </Protected>
-        }
+        element={<Suppliers />}
       />
 
-      {/* =====================================================
-          SALES
-      ===================================================== */}
+      {/* SALES */}
       <Route
         path="/sales"
-        element={
-          <Protected>
-            <Sales />
-          </Protected>
-        }
+        element={<Sales />}
       />
 
-      {/* =====================================================
-          UNKNOWN ROUTES
-      ===================================================== */}
+      {/* UNKNOWN */}
       <Route
         path="*"
         element={<Navigate to="/dashboard" replace />}
       />
 
     </Routes>
+  );
+}
+```
+
+**Nakuyeho `Protected`** kugira ngo gukanda pages bigende nta token.
+
+---
+
+### 2. Koresha `NavLink` muri Sidebar/Navbar
+
+Muri `components/Navbar.jsx` cyangwa Sidebar yawe, ntukoreshe:
+
+```jsx
+<a href="/products">Products</a>
+```
+
+Koresha:
+
+```jsx
+import { NavLink, useNavigate } from "react-router-dom";
+
+export default function Navbar() {
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/dashboard", { replace: true });
+  };
+
+  return (
+    <nav className="navbar">
+
+      <NavLink to="/dashboard">
+        Dashboard
+      </NavLink>
+
+      <NavLink to="/products">
+        Products
+      </NavLink>
+
+      <NavLink to="/categories">
+        Categories
+      </NavLink>
+
+      <NavLink to="/suppliers">
+        Suppliers
+      </NavLink>
+
+      <NavLink to="/sales">
+        Sales
+      </NavLink>
+
+      <button onClick={logout}>
+        Logout
+      </button>
+
+    </nav>
   );
 }
 ```
