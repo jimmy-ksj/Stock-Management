@@ -1,4 +1,8 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import {
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
+
 import {
   LayoutDashboard,
   Package,
@@ -13,7 +17,9 @@ import {
 export default function Navbar() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const user = JSON.parse(
+    localStorage.getItem("user") || "null"
+  );
 
   const menuItems = [
     {
@@ -55,35 +61,30 @@ export default function Navbar() {
   return (
     <aside className="sidebar">
 
-      {/* =========================
-          BRAND
-      ========================= */}
-      <div className="sidebar-brand">
+      {/* LOGO */}
+      <div className="brand">
 
-        <div className="brand-logo">
-          <Boxes size={23} strokeWidth={2.5} />
+        <div className="brand-icon">
+          <Boxes size={24} />
         </div>
 
-        <div className="brand-content">
-          <h2>
+        <div>
+          <div className="brand-name">
             Stock<span>Pro</span>
-          </h2>
+          </div>
 
-          <p>Management System</p>
+          <div className="brand-subtitle">
+            Management System
+          </div>
         </div>
 
       </div>
 
-      {/* =========================
-          MENU TITLE
-      ========================= */}
-      <div className="menu-title">
+      {/* MENU */}
+      <div className="menu-label">
         MAIN MENU
       </div>
 
-      {/* =========================
-          NAVIGATION
-      ========================= */}
       <nav className="sidebar-nav">
 
         {menuItems.map((item) => {
@@ -95,31 +96,35 @@ export default function Navbar() {
               to={item.path}
               end={item.path === "/dashboard"}
               className={({ isActive }) =>
-                `sidebar-link ${isActive ? "active" : ""}`
+                `sidebar-link ${
+                  isActive ? "active" : ""
+                }`
               }
             >
-              <span className="link-icon">
-                <Icon size={19} strokeWidth={2} />
+
+              <span className="sidebar-icon">
+                <Icon size={19} />
               </span>
 
-              <span className="link-text">
+              <span className="sidebar-text">
                 {item.label}
               </span>
 
               <ChevronRight
-                className="link-arrow"
+                className="sidebar-arrow"
                 size={16}
               />
+
             </NavLink>
           );
         })}
 
       </nav>
 
-      {/* =========================
-          USER CARD
-      ========================= */}
-      <div className="sidebar-user">
+      {/* USER */}
+      <div className="sidebar-spacer" />
+
+      <div className="user-card">
 
         <div className="user-avatar">
           {user?.fullname
@@ -127,7 +132,8 @@ export default function Navbar() {
             : "A"}
         </div>
 
-        <div className="user-info">
+        <div className="user-details">
+
           <strong>
             {user?.fullname || "Administrator"}
           </strong>
@@ -135,31 +141,25 @@ export default function Navbar() {
           <span>
             {user?.role || "Admin"}
           </span>
+
         </div>
 
       </div>
 
-      {/* =========================
-          LOGOUT
-      ========================= */}
+      {/* LOGOUT */}
       <button
         type="button"
-        className="logout"
+        className="logout-button"
         onClick={logout}
       >
-        <span className="logout-icon">
-          <LogOut size={18} />
-        </span>
+        <LogOut size={18} />
 
         <span>
           Logout
         </span>
       </button>
 
-      {/* =========================
-          VERSION
-      ========================= */}
-      <div className="sidebar-version">
+      <div className="version">
         StockPro v1.0.0
       </div>
 
