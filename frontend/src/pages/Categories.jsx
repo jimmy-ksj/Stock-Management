@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import api from "../services/api";
 import Layout from "../components/Layout";
@@ -10,6 +9,7 @@ export default function Categories() {
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const load = async () => {
     try {
@@ -17,9 +17,15 @@ export default function Categories() {
       setError("");
 
       const response = await api.get("/categories");
-      setData(Array.isArray(response.data) ? response.data : []);
+
+      setData(
+        Array.isArray(response.data)
+          ? response.data
+          : []
+      );
     } catch (err) {
       console.error(err);
+
       setError(
         err.response?.data?.message ||
           "Failed to load categories."
@@ -38,18 +44,29 @@ export default function Categories() {
 
     const categoryName = name.trim();
 
-    if (!categoryName) return;
+    if (!categoryName) {
+      setError("Category name is required.");
+      return;
+    }
 
     try {
       setAdding(true);
       setError("");
+      setSuccess("");
 
       await api.post("/categories", {
         category_name: categoryName,
       });
 
       setName("");
+
+      setSuccess("Category added successfully.");
+
       await load();
+
+      setTimeout(() => {
+        setSuccess("");
+      }, 3000);
     } catch (err) {
       console.error(err);
 
@@ -71,546 +88,550 @@ export default function Categories() {
   }, [data, search]);
 
   return (
-    <>
-      <style>{`
-        .categories-page {
-          width: 100%;
-          color: #e9f1ec;
-        }
+    <Layout>
+      <div
+        style={{
+          width: "100%",
+          minHeight: "100vh",
+          padding: "5px 0 40px",
+          color: "#e8f1ec",
+          boxSizing: "border-box",
+        }}
+      >
 
-        .categories-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 20px;
-          margin-bottom: 25px;
-        }
+        {/* HEADER */}
 
-        .header-title {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-        }
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "20px",
+            marginBottom: "28px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
+            <div
+              style={{
+                width: "56px",
+                height: "56px",
+                minWidth: "56px",
+                borderRadius: "16px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background:
+                  "linear-gradient(135deg, rgba(0,255,136,.20), rgba(0,255,136,.04))",
+                border:
+                  "1px solid rgba(0,255,136,.20)",
+                boxShadow:
+                  "0 0 30px rgba(0,255,136,.08)",
+                fontSize: "25px",
+              }}
+            >
+              🗂️
+            </div>
 
-        .header-icon {
-          width: 52px;
-          height: 52px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 15px;
-          font-size: 23px;
-          background: linear-gradient(
-            135deg,
-            rgba(0,255,136,.18),
-            rgba(0,255,136,.04)
-          );
-          border: 1px solid rgba(0,255,136,.16);
-          box-shadow: 0 0 25px rgba(0,255,136,.06);
-        }
+            <div>
+              <h1
+                style={{
+                  margin: 0,
+                  color: "#ffffff",
+                  fontSize: "30px",
+                  fontWeight: 800,
+                  lineHeight: 1.1,
+                  letterSpacing: "-1px",
+                }}
+              >
+                Categories
+              </h1>
 
-        .categories-header h1 {
-          margin: 0;
-          font-size: 29px;
-          font-weight: 800;
-          letter-spacing: -.8px;
-          color: #fff;
-        }
+              <p
+                style={{
+                  margin: "7px 0 0",
+                  color: "#718079",
+                  fontSize: "13px",
+                }}
+              >
+                Organize and manage your product categories.
+              </p>
+            </div>
+          </div>
 
-        .categories-header p {
-          margin: 5px 0 0;
-          color: #75827b;
-          font-size: 13px;
-        }
+          {/* COUNT */}
 
-        .category-count {
-          min-width: 105px;
-          padding: 12px 17px;
-          text-align: center;
-          border-radius: 13px;
-          background: rgba(255,255,255,.035);
-          border: 1px solid rgba(255,255,255,.07);
-        }
+          <div
+            style={{
+              minWidth: "115px",
+              padding: "14px 18px",
+              textAlign: "center",
+              borderRadius: "15px",
+              background:
+                "linear-gradient(145deg, rgba(255,255,255,.05), rgba(255,255,255,.015))",
+              border:
+                "1px solid rgba(255,255,255,.08)",
+              boxShadow:
+                "0 12px 35px rgba(0,0,0,.15)",
+            }}
+          >
+            <div
+              style={{
+                color: "#00ff88",
+                fontSize: "23px",
+                fontWeight: 800,
+                lineHeight: 1,
+              }}
+            >
+              {data.length}
+            </div>
 
-        .category-count strong {
-          display: block;
-          color: #00ff88;
-          font-size: 20px;
-          line-height: 1;
-        }
+            <div
+              style={{
+                marginTop: "6px",
+                color: "#66736c",
+                fontSize: "9px",
+                fontWeight: 700,
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+              }}
+            >
+              Total Categories
+            </div>
+          </div>
+        </div>
 
-        .category-count span {
-          display: block;
-          margin-top: 5px;
-          color: #68756e;
-          font-size: 10px;
-          text-transform: uppercase;
-          letter-spacing: .7px;
-        }
+        {/* ALERTS */}
 
-        .category-form {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin-bottom: 20px;
-          padding: 18px;
-          border-radius: 17px;
-          border: 1px solid rgba(255,255,255,.07);
-          background:
-            linear-gradient(
-              135deg,
-              rgba(255,255,255,.045),
-              rgba(255,255,255,.018)
-            );
-          box-shadow: 0 15px 45px rgba(0,0,0,.16);
-        }
+        {error && (
+          <div
+            style={{
+              marginBottom: "18px",
+              padding: "13px 16px",
+              borderRadius: "11px",
+              background: "rgba(255,60,60,.07)",
+              border:
+                "1px solid rgba(255,80,80,.17)",
+              color: "#ff9d9d",
+              fontSize: "12px",
+            }}
+          >
+            ⚠️ {error}
+          </div>
+        )}
 
-        .category-input-wrapper {
-          position: relative;
-          flex: 1;
-        }
+        {success && (
+          <div
+            style={{
+              marginBottom: "18px",
+              padding: "13px 16px",
+              borderRadius: "11px",
+              background: "rgba(0,255,136,.06)",
+              border:
+                "1px solid rgba(0,255,136,.16)",
+              color: "#5dffab",
+              fontSize: "12px",
+            }}
+          >
+            ✓ {success}
+          </div>
+        )}
 
-        .category-input-icon {
-          position: absolute;
-          left: 15px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #647169;
-          pointer-events: none;
-        }
+        {/* ADD CATEGORY */}
 
-        .category-input {
-          width: 100%;
-          height: 49px;
-          padding: 0 15px 0 44px;
-          border-radius: 12px;
-          outline: none;
-          border: 1px solid rgba(255,255,255,.08);
-          background: rgba(0,0,0,.18);
-          color: #fff;
-          font-size: 13px;
-          transition: .25s ease;
-        }
+        <form
+          onSubmit={add}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "20px",
+            marginBottom: "22px",
+            borderRadius: "18px",
+            background:
+              "linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.015))",
+            border:
+              "1px solid rgba(255,255,255,.075)",
+            boxShadow:
+              "0 18px 50px rgba(0,0,0,.16)",
+            boxSizing: "border-box",
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              position: "relative",
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                left: "15px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: "#65736b",
+                fontSize: "18px",
+              }}
+            >
+              ＋
+            </span>
 
-        .category-input::placeholder {
-          color: #56635c;
-        }
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setError("");
+              }}
+              placeholder="Enter new category name..."
+              style={{
+                width: "100%",
+                height: "50px",
+                boxSizing: "border-box",
+                padding: "0 15px 0 44px",
+                borderRadius: "12px",
+                outline: "none",
+                border:
+                  "1px solid rgba(255,255,255,.09)",
+                background: "rgba(0,0,0,.25)",
+                color: "#ffffff",
+                fontSize: "13px",
+              }}
+            />
+          </div>
 
-        .category-input:focus {
-          border-color: rgba(0,255,136,.45);
-          box-shadow: 0 0 0 3px rgba(0,255,136,.06);
-        }
+          <button
+            type="submit"
+            disabled={adding}
+            style={{
+              height: "50px",
+              padding: "0 24px",
+              border: "none",
+              borderRadius: "12px",
+              background:
+                "linear-gradient(135deg, #00ff88, #00cf72)",
+              color: "#001d0d",
+              fontWeight: 800,
+              fontSize: "13px",
+              cursor: adding
+                ? "not-allowed"
+                : "pointer",
+              opacity: adding ? 0.55 : 1,
+              boxShadow:
+                "0 8px 25px rgba(0,255,136,.13)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {adding
+              ? "Adding..."
+              : "＋ Add Category"}
+          </button>
+        </form>
 
-        .add-button {
-          height: 49px;
-          padding: 0 22px;
-          border: none;
-          border-radius: 12px;
-          cursor: pointer;
-          color: #021109;
-          font-weight: 800;
-          font-size: 13px;
-          background: linear-gradient(
-            135deg,
-            #00ff88,
-            #00ce70
-          );
-          box-shadow: 0 8px 25px rgba(0,255,136,.12);
-          transition: .25s ease;
-          white-space: nowrap;
-        }
+        {/* TABLE PANEL */}
 
-        .add-button:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 30px rgba(0,255,136,.22);
-        }
+        <div
+          style={{
+            overflow: "hidden",
+            borderRadius: "18px",
+            background: "rgba(7,12,10,.76)",
+            border:
+              "1px solid rgba(255,255,255,.075)",
+            boxShadow:
+              "0 20px 60px rgba(0,0,0,.20)",
+          }}
+        >
 
-        .add-button:disabled {
-          opacity: .55;
-          cursor: not-allowed;
-        }
+          {/* TABLE HEADER */}
 
-        .table-panel {
-          overflow: hidden;
-          border-radius: 18px;
-          border: 1px solid rgba(255,255,255,.07);
-          background: rgba(8,13,11,.72);
-          box-shadow: 0 20px 55px rgba(0,0,0,.18);
-        }
-
-        .table-toolbar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 15px;
-          padding: 18px 20px;
-          border-bottom: 1px solid rgba(255,255,255,.06);
-        }
-
-        .table-title {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .table-title-icon {
-          color: #00ff88;
-        }
-
-        .table-title h3 {
-          margin: 0;
-          color: #eaf2ed;
-          font-size: 14px;
-          font-weight: 700;
-        }
-
-        .table-title span {
-          color: #59665f;
-          font-size: 11px;
-        }
-
-        .search-box {
-          position: relative;
-          width: 230px;
-        }
-
-        .search-box span {
-          position: absolute;
-          left: 13px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #5d6962;
-        }
-
-        .search-input {
-          width: 100%;
-          height: 38px;
-          padding: 0 12px 0 37px;
-          border-radius: 10px;
-          border: 1px solid rgba(255,255,255,.07);
-          outline: none;
-          color: #fff;
-          background: rgba(255,255,255,.025);
-          font-size: 12px;
-        }
-
-        .search-input:focus {
-          border-color: rgba(0,255,136,.35);
-        }
-
-        .table-wrap {
-          width: 100%;
-          overflow-x: auto;
-        }
-
-        .category-table {
-          width: 100%;
-          border-collapse: collapse;
-          min-width: 550px;
-        }
-
-        .category-table th {
-          padding: 14px 20px;
-          text-align: left;
-          color: #69766f;
-          background: rgba(255,255,255,.018);
-          border-bottom: 1px solid rgba(255,255,255,.06);
-          font-size: 10px;
-          text-transform: uppercase;
-          letter-spacing: .8px;
-          font-weight: 700;
-        }
-
-        .category-table td {
-          padding: 16px 20px;
-          color: #c9d3cd;
-          border-bottom: 1px solid rgba(255,255,255,.045);
-          font-size: 13px;
-        }
-
-        .category-table tbody tr {
-          transition: .2s ease;
-        }
-
-        .category-table tbody tr:hover {
-          background: rgba(0,255,136,.025);
-        }
-
-        .category-table tbody tr:last-child td {
-          border-bottom: none;
-        }
-
-        .id-badge {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          min-width: 34px;
-          height: 26px;
-          padding: 0 8px;
-          border-radius: 8px;
-          color: #00e67d;
-          background: rgba(0,255,136,.07);
-          border: 1px solid rgba(0,255,136,.11);
-          font-size: 11px;
-          font-weight: 700;
-        }
-
-        .category-name {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          color: #edf4ef;
-          font-weight: 600;
-        }
-
-        .category-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #00ff88;
-          box-shadow: 0 0 9px rgba(0,255,136,.45);
-        }
-
-        .loading-state,
-        .empty-state {
-          padding: 55px 20px;
-          text-align: center;
-          color: #66736c;
-          font-size: 13px;
-        }
-
-        .loading-spinner {
-          width: 27px;
-          height: 27px;
-          margin: 0 auto 12px;
-          border-radius: 50%;
-          border: 2px solid rgba(0,255,136,.12);
-          border-top-color: #00ff88;
-          animation: categorySpin .7s linear infinite;
-        }
-
-        @keyframes categorySpin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        .empty-icon {
-          font-size: 32px;
-          margin-bottom: 10px;
-          opacity: .55;
-        }
-
-        .error-box {
-          margin-bottom: 18px;
-          padding: 13px 15px;
-          border-radius: 11px;
-          color: #ff9b9b;
-          background: rgba(255,50,50,.06);
-          border: 1px solid rgba(255,70,70,.16);
-          font-size: 12px;
-        }
-
-        @media (max-width: 700px) {
-          .categories-header {
-            align-items: flex-start;
-          }
-
-          .category-count {
-            min-width: 80px;
-          }
-
-          .category-form {
-            flex-direction: column;
-          }
-
-          .category-input-wrapper,
-          .add-button {
-            width: 100%;
-          }
-
-          .table-toolbar {
-            align-items: flex-start;
-            flex-direction: column;
-          }
-
-          .search-box {
-            width: 100%;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .categories-header h1 {
-            font-size: 23px;
-          }
-
-          .header-icon {
-            width: 45px;
-            height: 45px;
-          }
-
-          .category-count {
-            display: none;
-          }
-
-          .category-form {
-            padding: 14px;
-          }
-        }
-      `}</style>
-
-      <Layout>
-        <div className="categories-page">
-
-          {/* HEADER */}
-          <header className="categories-header">
-            <div className="header-title">
-              <div className="header-icon">
-                🗂️
-              </div>
+          <div
+            style={{
+              padding: "18px 20px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "15px",
+              borderBottom:
+                "1px solid rgba(255,255,255,.06)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "11px",
+              }}
+            >
+              <span
+                style={{
+                  color: "#00ff88",
+                  fontSize: "18px",
+                }}
+              >
+                ◈
+              </span>
 
               <div>
-                <h1>Categories</h1>
-                <p>
-                  Organize and manage your product categories.
-                </p>
+                <div
+                  style={{
+                    color: "#eaf2ed",
+                    fontSize: "14px",
+                    fontWeight: 700,
+                  }}
+                >
+                  Category List
+                </div>
+
+                <div
+                  style={{
+                    marginTop: "3px",
+                    color: "#59665f",
+                    fontSize: "11px",
+                  }}
+                >
+                  {filteredCategories.length} categories
+                  displayed
+                </div>
               </div>
             </div>
 
-            <div className="category-count">
-              <strong>{data.length}</strong>
-              <span>Total Categories</span>
-            </div>
-          </header>
+            {/* SEARCH */}
 
-          {/* ERROR */}
-          {error && (
-            <div className="error-box">
-              ⚠️ {error}
-            </div>
-          )}
-
-          {/* ADD CATEGORY */}
-          <form
-            className="category-form"
-            onSubmit={add}
-          >
-            <div className="category-input-wrapper">
-              <span className="category-input-icon">
-                ＋
+            <div
+              style={{
+                width: "240px",
+                position: "relative",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  left: "13px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "#5d6962",
+                  fontSize: "16px",
+                }}
+              >
+                ⌕
               </span>
 
               <input
-                className="category-input"
-                required
-                value={name}
+                value={search}
                 onChange={(e) =>
-                  setName(e.target.value)
+                  setSearch(e.target.value)
                 }
-                placeholder="Enter new category name..."
+                placeholder="Search categories..."
+                style={{
+                  width: "100%",
+                  height: "39px",
+                  boxSizing: "border-box",
+                  padding: "0 12px 0 37px",
+                  borderRadius: "10px",
+                  border:
+                    "1px solid rgba(255,255,255,.07)",
+                  outline: "none",
+                  background:
+                    "rgba(255,255,255,.025)",
+                  color: "#ffffff",
+                  fontSize: "12px",
+                }}
               />
             </div>
-
-            <button
-              className="add-button"
-              type="submit"
-              disabled={adding}
-            >
-              {adding ? "Adding..." : "＋ Add Category"}
-            </button>
-          </form>
+          </div>
 
           {/* TABLE */}
-          <div className="table-panel">
 
-            <div className="table-toolbar">
-
-              <div className="table-title">
-                <span className="table-title-icon">
-                  ◈
-                </span>
-
-                <div>
-                  <h3>Category List</h3>
-                  <span>
-                    {filteredCategories.length} categories
-                    displayed
-                  </span>
-                </div>
-              </div>
-
-              <div className="search-box">
-                <span>⌕</span>
-
-                <input
-                  className="search-input"
-                  value={search}
-                  onChange={(e) =>
-                    setSearch(e.target.value)
-                  }
-                  placeholder="Search categories..."
+          <div
+            style={{
+              width: "100%",
+              overflowX: "auto",
+            }}
+          >
+            {loading ? (
+              <div
+                style={{
+                  padding: "65px 20px",
+                  textAlign: "center",
+                  color: "#68756e",
+                  fontSize: "13px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "28px",
+                    height: "28px",
+                    margin: "0 auto 13px",
+                    borderRadius: "50%",
+                    border:
+                      "2px solid rgba(0,255,136,.12)",
+                    borderTopColor: "#00ff88",
+                    animation:
+                      "spin 0.7s linear infinite",
+                  }}
                 />
+
+                Loading categories...
               </div>
-
-            </div>
-
-            <div className="table-wrap">
-
-              {loading ? (
-                <div className="loading-state">
-                  <div className="loading-spinner"></div>
-                  Loading categories...
+            ) : filteredCategories.length === 0 ? (
+              <div
+                style={{
+                  padding: "65px 20px",
+                  textAlign: "center",
+                  color: "#68756e",
+                  fontSize: "13px",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "35px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  🗂️
                 </div>
-              ) : filteredCategories.length === 0 ? (
-                <div className="empty-state">
-                  <div className="empty-icon">
-                    🗂️
-                  </div>
 
-                  {search
-                    ? "No category matches your search."
-                    : "No categories found. Add your first category."}
-                </div>
-              ) : (
-                <table className="category-table">
+                {search
+                  ? "No category matches your search."
+                  : "No categories found. Add your first category."}
+              </div>
+            ) : (
+              <table
+                style={{
+                  width: "100%",
+                  minWidth: "550px",
+                  borderCollapse: "collapse",
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th
+                      style={{
+                        padding: "14px 20px",
+                        textAlign: "left",
+                        color: "#69766f",
+                        background:
+                          "rgba(255,255,255,.018)",
+                        borderBottom:
+                          "1px solid rgba(255,255,255,.06)",
+                        fontSize: "10px",
+                        letterSpacing: "1px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      ID
+                    </th>
 
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Category Name</th>
-                    </tr>
-                  </thead>
+                    <th
+                      style={{
+                        padding: "14px 20px",
+                        textAlign: "left",
+                        color: "#69766f",
+                        background:
+                          "rgba(255,255,255,.018)",
+                        borderBottom:
+                          "1px solid rgba(255,255,255,.06)",
+                        fontSize: "10px",
+                        letterSpacing: "1px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Category Name
+                    </th>
+                  </tr>
+                </thead>
 
-                  <tbody>
-                    {filteredCategories.map((item) => (
+                <tbody>
+                  {filteredCategories.map(
+                    (item) => (
                       <tr key={item.id}>
-
-                        <td>
-                          <span className="id-badge">
+                        <td
+                          style={{
+                            padding: "16px 20px",
+                            borderBottom:
+                              "1px solid rgba(255,255,255,.045)",
+                          }}
+                        >
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              minWidth: "36px",
+                              height: "27px",
+                              padding: "0 8px",
+                              borderRadius: "8px",
+                              color: "#00e67d",
+                              background:
+                                "rgba(0,255,136,.07)",
+                              border:
+                                "1px solid rgba(0,255,136,.11)",
+                              fontSize: "11px",
+                              fontWeight: 700,
+                            }}
+                          >
                             #{item.id}
                           </span>
                         </td>
 
-                        <td>
-                          <div className="category-name">
-                            <span className="category-dot"></span>
+                        <td
+                          style={{
+                            padding: "16px 20px",
+                            borderBottom:
+                              "1px solid rgba(255,255,255,.045)",
+                            color: "#edf4ef",
+                            fontSize: "13px",
+                            fontWeight: 600,
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "11px",
+                            }}
+                          >
+                            <span
+                              style={{
+                                width: "9px",
+                                height: "9px",
+                                borderRadius: "50%",
+                                background:
+                                  "#00ff88",
+                                boxShadow:
+                                  "0 0 10px rgba(0,255,136,.45)",
+                              }}
+                            />
+
                             {item.category_name}
                           </div>
                         </td>
-
                       </tr>
-                    ))}
-                  </tbody>
-
-                </table>
-              )}
-
-            </div>
+                    )
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
-
         </div>
-      </Layout>
-    </>
+      </div>
+
+      {/* animation */}
+      <style>
+        {`
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        `}
+      </style>
+    </Layout>
   );
 }
-```
