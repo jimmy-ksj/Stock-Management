@@ -1,4 +1,3 @@
-```jsx
 import { useEffect, useMemo, useState } from "react";
 import api from "../services/api";
 import Layout from "../components/Layout";
@@ -29,9 +28,7 @@ export default function Suppliers() {
       const response = await api.get("/suppliers");
 
       setSuppliers(
-        Array.isArray(response.data)
-          ? response.data
-          : []
+        Array.isArray(response.data) ? response.data : []
       );
     } catch (error) {
       console.error(error);
@@ -111,7 +108,7 @@ export default function Suppliers() {
   };
 
   const filteredSuppliers = useMemo(() => {
-    const keyword = search.toLowerCase();
+    const keyword = search.toLowerCase().trim();
 
     return suppliers.filter((supplier) => {
       return (
@@ -131,255 +128,303 @@ export default function Suppliers() {
   return (
     <>
       <style>{`
+
+        /* ================================
+           SUPPLIERS PAGE
+        ================================= */
+
         .suppliers-page {
           width: 100%;
-          color: #eaf2ed;
+          min-height: 100%;
+          color: #e9f1ec;
+          padding-bottom: 30px;
         }
 
-        /* HEADER */
+        /* ================================
+           HEADER
+        ================================= */
 
-        .suppliers-header {
+        .supplier-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 20px;
-          margin-bottom: 25px;
+          margin-bottom: 24px;
         }
 
-        .suppliers-title {
+        .supplier-heading {
           display: flex;
           align-items: center;
-          gap: 15px;
+          gap: 14px;
         }
 
-        .suppliers-icon {
-          width: 54px;
-          height: 54px;
+        .supplier-heading-icon {
+          width: 52px;
+          height: 52px;
+          border-radius: 14px;
 
           display: flex;
           align-items: center;
           justify-content: center;
 
-          border-radius: 16px;
+          font-size: 23px;
 
-          font-size: 24px;
-
-          background:
-            linear-gradient(
-              135deg,
-              rgba(0,255,136,.18),
-              rgba(0,255,136,.035)
-            );
-
-          border: 1px solid rgba(0,255,136,.16);
+          background: rgba(0, 255, 136, 0.08);
+          border: 1px solid rgba(0, 255, 136, 0.14);
 
           box-shadow:
-            0 0 25px rgba(0,255,136,.06);
+            0 0 25px rgba(0, 255, 136, 0.05);
         }
 
-        .suppliers-header h1 {
+        .supplier-heading h1 {
           margin: 0;
+          color: #ffffff;
+          font-size: 27px;
+          font-weight: 800;
+          letter-spacing: -0.7px;
+        }
 
-          color: #fff;
+        .supplier-heading p {
+          margin: 5px 0 0;
+          color: #718078;
+          font-size: 12px;
+        }
 
-          font-size: 29px;
+        /* ================================
+           TOP BUTTON
+        ================================= */
+
+        .top-add-btn {
+          border: 0;
+          outline: 0;
+          cursor: pointer;
+
+          height: 42px;
+          padding: 0 18px;
+
+          border-radius: 10px;
+
+          color: #04140c;
+          background: #00ff88;
+
+          font-size: 12px;
           font-weight: 800;
 
-          letter-spacing: -.8px;
+          box-shadow:
+            0 8px 25px rgba(0, 255, 136, 0.12);
+
+          transition: 0.25s ease;
         }
 
-        .suppliers-header p {
-          margin: 5px 0 0;
+        .top-add-btn:hover {
+          transform: translateY(-2px);
 
-          color: #75827b;
-
-          font-size: 13px;
+          box-shadow:
+            0 12px 30px rgba(0, 255, 136, 0.2);
         }
 
-        /* SUMMARY */
+        /* ================================
+           STAT CARDS
+        ================================= */
 
-        .supplier-summary {
+        .supplier-stats {
           display: grid;
-
-          grid-template-columns:
-            repeat(3, 1fr);
-
-          gap: 16px;
-
+          grid-template-columns: repeat(3, 1fr);
+          gap: 15px;
           margin-bottom: 20px;
         }
 
-        .summary-card {
+        .supplier-stat {
           position: relative;
-
           overflow: hidden;
 
-          padding: 20px;
+          min-height: 105px;
+          padding: 18px;
 
-          border-radius: 17px;
-
-          border: 1px solid rgba(255,255,255,.07);
+          border-radius: 15px;
 
           background:
             linear-gradient(
               145deg,
-              rgba(255,255,255,.045),
-              rgba(255,255,255,.015)
+              rgba(255,255,255,0.045),
+              rgba(255,255,255,0.012)
             );
 
+          border: 1px solid rgba(255,255,255,0.065);
+
           box-shadow:
-            0 15px 40px rgba(0,0,0,.15);
+            0 10px 30px rgba(0,0,0,0.13);
+
+          transition: 0.25s ease;
         }
 
-        .summary-card::after {
+        .supplier-stat:hover {
+          transform: translateY(-2px);
+
+          border-color:
+            rgba(0,255,136,0.14);
+        }
+
+        .supplier-stat::before {
           content: "";
 
           position: absolute;
 
-          width: 100px;
-          height: 100px;
+          width: 90px;
+          height: 90px;
 
-          right: -45px;
-          bottom: -45px;
+          right: -40px;
+          bottom: -40px;
 
           border-radius: 50%;
 
-          background: rgba(0,255,136,.06);
+          background:
+            rgba(0,255,136,0.055);
         }
 
-        .summary-top {
+        .stat-top {
           display: flex;
-
           align-items: center;
-
           justify-content: space-between;
 
-          margin-bottom: 14px;
+          margin-bottom: 13px;
         }
 
-        .summary-label {
-          color: #68766f;
+        .stat-title {
+          color: #6e7b74;
 
-          font-size: 11px;
+          font-size: 10px;
+          font-weight: 700;
 
           text-transform: uppercase;
-
-          letter-spacing: .7px;
+          letter-spacing: 0.8px;
         }
 
-        .summary-icon {
-          width: 32px;
-          height: 32px;
+        .stat-icon {
+          width: 31px;
+          height: 31px;
 
           display: flex;
-
           align-items: center;
-
           justify-content: center;
 
           border-radius: 9px;
 
           color: #00ff88;
 
-          background: rgba(0,255,136,.07);
+          background:
+            rgba(0,255,136,0.07);
 
-          border: 1px solid rgba(0,255,136,.1);
+          border:
+            1px solid rgba(0,255,136,0.1);
+
+          font-size: 14px;
         }
 
-        .summary-value {
-          color: #fff;
+        .stat-value {
+          color: #ffffff;
 
-          font-size: 25px;
-
+          font-size: 24px;
           font-weight: 800;
 
-          letter-spacing: -.6px;
+          letter-spacing: -0.5px;
         }
 
-        .summary-value.green {
+        .stat-value.green {
           color: #00ff88;
         }
 
-        /* MESSAGE */
+        /* ================================
+           MESSAGE
+        ================================= */
 
-        .message {
+        .supplier-message {
+          padding: 12px 14px;
           margin-bottom: 18px;
 
-          padding: 13px 15px;
-
-          border-radius: 11px;
+          border-radius: 10px;
 
           font-size: 12px;
+          font-weight: 600;
         }
 
-        .message.success {
-          color: #6dffb0;
-
-          background: rgba(0,255,136,.055);
-
-          border:
-            1px solid rgba(0,255,136,.15);
-        }
-
-        .message.error {
-          color: #ff9b9b;
-
-          background: rgba(255,50,50,.055);
-
-          border:
-            1px solid rgba(255,70,70,.16);
-        }
-
-        /* FORM */
-
-        .supplier-form-panel {
-          margin-bottom: 20px;
-
-          padding: 21px;
-
-          border-radius: 18px;
-
-          border:
-            1px solid rgba(255,255,255,.07);
+        .supplier-message.success {
+          color: #6dffad;
 
           background:
-            linear-gradient(
-              135deg,
-              rgba(0,255,136,.045),
-              rgba(255,255,255,.018)
-            );
+            rgba(0,255,136,0.055);
 
-          box-shadow:
-            0 20px 55px rgba(0,0,0,.18);
+          border:
+            1px solid rgba(0,255,136,0.14);
         }
 
-        .panel-heading {
+        .supplier-message.error {
+          color: #ff9a9a;
+
+          background:
+            rgba(255,50,50,0.055);
+
+          border:
+            1px solid rgba(255,60,60,0.14);
+        }
+
+        /* ================================
+           ADD FORM
+        ================================= */
+
+        .supplier-form-card {
+          padding: 20px;
+          margin-bottom: 20px;
+
+          border-radius: 15px;
+
+          background:
+            rgba(8,13,11,0.72);
+
+          border:
+            1px solid rgba(255,255,255,0.065);
+
+          box-shadow:
+            0 15px 40px rgba(0,0,0,0.14);
+        }
+
+        .form-header {
           display: flex;
-
           align-items: center;
-
           gap: 10px;
 
           margin-bottom: 18px;
         }
 
-        .panel-heading-icon {
+        .form-header-icon {
+          width: 34px;
+          height: 34px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          border-radius: 9px;
+
           color: #00ff88;
 
-          font-size: 17px;
+          background:
+            rgba(0,255,136,0.07);
+
+          border:
+            1px solid rgba(0,255,136,0.1);
         }
 
-        .panel-heading h3 {
+        .form-header h3 {
           margin: 0;
 
-          color: #eaf2ed;
+          color: #e9f1ec;
 
           font-size: 14px;
-
           font-weight: 700;
         }
 
-        .panel-heading p {
+        .form-header p {
           margin: 3px 0 0;
 
           color: #59665f;
@@ -391,192 +436,31 @@ export default function Suppliers() {
           display: grid;
 
           grid-template-columns:
-            1.2fr
-            1fr
-            1fr
-            160px;
+            1.2fr 1fr 1fr 150px;
 
           gap: 12px;
 
           align-items: end;
         }
 
-        .field label {
+        .form-field label {
           display: block;
 
-          margin-bottom: 8px;
+          margin-bottom: 7px;
 
-          color: #8c9992;
+          color: #7d8a83;
 
-          font-size: 11px;
+          font-size: 10px;
+          font-weight: 700;
 
-          font-weight: 600;
+          letter-spacing: 0.6px;
         }
 
-        .input-wrapper {
+        .input-container {
           position: relative;
         }
 
-        .field-icon {
-          position: absolute;
-
-          left: 14px;
-          top: 50%;
-
-          transform: translateY(-50%);
-
-          color: #5f6c65;
-
-          pointer-events: none;
-        }
-
-        .supplier-input {
-          width: 100%;
-
-          height: 49px;
-
-          padding: 0 13px 0 42px;
-
-          border-radius: 11px;
-
-          outline: none;
-
-          border:
-            1px solid rgba(255,255,255,.08);
-
-          background: rgba(0,0,0,.2);
-
-          color: #fff;
-
-          font-size: 13px;
-
-          transition: .25s ease;
-        }
-
-        .supplier-input::placeholder {
-          color: #536059;
-        }
-
-        .supplier-input:focus {
-          border-color:
-            rgba(0,255,136,.45);
-
-          box-shadow:
-            0 0 0 3px rgba(0,255,136,.06);
-        }
-
-        .add-button {
-          height: 49px;
-
-          border: none;
-
-          border-radius: 11px;
-
-          cursor: pointer;
-
-          color: #021109;
-
-          font-size: 13px;
-
-          font-weight: 800;
-
-          background:
-            linear-gradient(
-              135deg,
-              #00ff88,
-              #00cf72
-            );
-
-          box-shadow:
-            0 9px 25px rgba(0,255,136,.12);
-
-          transition: .25s ease;
-        }
-
-        .add-button:hover:not(:disabled) {
-          transform: translateY(-2px);
-
-          box-shadow:
-            0 13px 30px rgba(0,255,136,.22);
-        }
-
-        .add-button:disabled {
-          opacity: .55;
-
-          cursor: not-allowed;
-        }
-
-        /* TABLE */
-
-        .supplier-table-panel {
-          overflow: hidden;
-
-          border-radius: 18px;
-
-          border:
-            1px solid rgba(255,255,255,.07);
-
-          background:
-            rgba(8,13,11,.72);
-
-          box-shadow:
-            0 20px 55px rgba(0,0,0,.18);
-        }
-
-        .table-toolbar {
-          display: flex;
-
-          align-items: center;
-
-          justify-content: space-between;
-
-          gap: 15px;
-
-          padding: 18px 20px;
-
-          border-bottom:
-            1px solid rgba(255,255,255,.06);
-        }
-
-        .table-title {
-          display: flex;
-
-          align-items: center;
-
-          gap: 10px;
-        }
-
-        .table-title-icon {
-          color: #00ff88;
-
-          font-size: 17px;
-        }
-
-        .table-title h3 {
-          margin: 0;
-
-          color: #eaf2ed;
-
-          font-size: 14px;
-        }
-
-        .table-title span {
-          display: block;
-
-          margin-top: 3px;
-
-          color: #59665f;
-
-          font-size: 11px;
-        }
-
-        .search-box {
-          position: relative;
-
-          width: 250px;
-        }
-
-        .search-icon {
+        .input-symbol {
           position: absolute;
 
           left: 13px;
@@ -584,144 +468,300 @@ export default function Suppliers() {
 
           transform: translateY(-50%);
 
-          color: #5d6962;
+          color: #59665f;
+
+          font-size: 13px;
+
+          pointer-events: none;
         }
 
-        .search-input {
+        .supplier-input {
           width: 100%;
+          height: 45px;
 
-          height: 38px;
+          box-sizing: border-box;
 
-          padding: 0 12px 0 37px;
-
-          border-radius: 10px;
-
-          border:
-            1px solid rgba(255,255,255,.07);
+          padding: 0 12px 0 38px;
 
           outline: none;
 
-          color: #fff;
+          border-radius: 9px;
+
+          color: #f4f8f5;
 
           background:
-            rgba(255,255,255,.025);
+            rgba(0,0,0,0.2);
+
+          border:
+            1px solid rgba(255,255,255,0.07);
 
           font-size: 12px;
+
+          transition: 0.2s ease;
         }
 
-        .search-input:focus {
+        .supplier-input::placeholder {
+          color: #4f5b55;
+        }
+
+        .supplier-input:focus {
           border-color:
-            rgba(0,255,136,.35);
+            rgba(0,255,136,0.35);
+
+          box-shadow:
+            0 0 0 3px rgba(0,255,136,0.045);
         }
 
-        .table-wrap {
-          width: 100%;
+        .submit-supplier {
+          height: 45px;
 
+          border: 0;
+          outline: 0;
+
+          border-radius: 9px;
+
+          cursor: pointer;
+
+          color: #031209;
+
+          background:
+            linear-gradient(
+              135deg,
+              #00ff88,
+              #00d875
+            );
+
+          font-size: 12px;
+          font-weight: 800;
+
+          transition: 0.25s ease;
+        }
+
+        .submit-supplier:hover:not(:disabled) {
+          transform: translateY(-2px);
+
+          box-shadow:
+            0 10px 25px rgba(0,255,136,0.16);
+        }
+
+        .submit-supplier:disabled {
+          opacity: 0.55;
+          cursor: not-allowed;
+        }
+
+        /* ================================
+           TABLE CARD
+        ================================= */
+
+        .supplier-table-card {
+          overflow: hidden;
+
+          border-radius: 15px;
+
+          background:
+            rgba(8,13,11,0.78);
+
+          border:
+            1px solid rgba(255,255,255,0.065);
+
+          box-shadow:
+            0 15px 45px rgba(0,0,0,0.16);
+        }
+
+        .table-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          gap: 15px;
+
+          padding: 17px 19px;
+
+          border-bottom:
+            1px solid rgba(255,255,255,0.055);
+        }
+
+        .table-heading {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .table-heading-icon {
+          color: #00ff88;
+          font-size: 16px;
+        }
+
+        .table-heading h3 {
+          margin: 0;
+
+          color: #e8f0eb;
+
+          font-size: 13px;
+          font-weight: 700;
+        }
+
+        .table-heading p {
+          margin: 3px 0 0;
+
+          color: #58655e;
+
+          font-size: 10px;
+        }
+
+        /* ================================
+           SEARCH
+        ================================= */
+
+        .supplier-search {
+          position: relative;
+          width: 245px;
+        }
+
+        .supplier-search span {
+          position: absolute;
+
+          left: 12px;
+          top: 50%;
+
+          transform: translateY(-50%);
+
+          color: #5a6760;
+        }
+
+        .supplier-search input {
+          width: 100%;
+          height: 37px;
+
+          box-sizing: border-box;
+
+          padding: 0 11px 0 35px;
+
+          outline: none;
+
+          border-radius: 9px;
+
+          color: #ffffff;
+
+          background:
+            rgba(255,255,255,0.025);
+
+          border:
+            1px solid rgba(255,255,255,0.07);
+
+          font-size: 11px;
+        }
+
+        .supplier-search input:focus {
+          border-color:
+            rgba(0,255,136,0.3);
+        }
+
+        /* ================================
+           TABLE
+        ================================= */
+
+        .supplier-table-wrapper {
+          width: 100%;
           overflow-x: auto;
         }
 
         .supplier-table {
           width: 100%;
-
-          min-width: 720px;
+          min-width: 700px;
 
           border-collapse: collapse;
         }
 
         .supplier-table th {
-          padding: 14px 20px;
+          padding: 13px 19px;
 
           text-align: left;
 
-          color: #69766f;
+          color: #65726b;
 
           background:
-            rgba(255,255,255,.018);
+            rgba(255,255,255,0.016);
 
           border-bottom:
-            1px solid rgba(255,255,255,.06);
+            1px solid rgba(255,255,255,0.05);
 
-          font-size: 10px;
+          font-size: 9px;
+          font-weight: 700;
 
           text-transform: uppercase;
-
-          letter-spacing: .8px;
-
-          font-weight: 700;
+          letter-spacing: 0.8px;
         }
 
         .supplier-table td {
-          padding: 16px 20px;
+          padding: 14px 19px;
 
-          color: #c9d3cd;
+          color: #c8d1cc;
 
           border-bottom:
-            1px solid rgba(255,255,255,.045);
+            1px solid rgba(255,255,255,0.04);
 
-          font-size: 13px;
+          font-size: 12px;
         }
 
         .supplier-table tbody tr {
-          transition: .2s ease;
+          transition: 0.18s ease;
         }
 
         .supplier-table tbody tr:hover {
           background:
-            rgba(0,255,136,.025);
+            rgba(0,255,136,0.025);
         }
 
         .supplier-table tbody tr:last-child td {
-          border-bottom: none;
+          border-bottom: 0;
         }
 
-        .id-badge {
+        /* ================================
+           ID
+        ================================= */
+
+        .supplier-id {
           display: inline-flex;
 
           align-items: center;
-
           justify-content: center;
 
-          min-width: 36px;
+          min-width: 34px;
+          height: 24px;
 
-          height: 26px;
+          padding: 0 7px;
 
-          padding: 0 8px;
+          border-radius: 7px;
 
-          border-radius: 8px;
-
-          color: #00e67d;
+          color: #00e681;
 
           background:
-            rgba(0,255,136,.07);
+            rgba(0,255,136,0.06);
 
           border:
-            1px solid rgba(0,255,136,.11);
+            1px solid rgba(0,255,136,0.1);
 
-          font-size: 11px;
-
+          font-size: 10px;
           font-weight: 700;
         }
 
-        .supplier-name {
+        /* ================================
+           SUPPLIER NAME
+        ================================= */
+
+        .supplier-person {
           display: flex;
-
           align-items: center;
-
           gap: 10px;
-
-          color: #edf4ef;
-
-          font-weight: 600;
         }
 
         .supplier-avatar {
-          width: 32px;
-          height: 32px;
+          width: 34px;
+          height: 34px;
 
           display: flex;
-
           align-items: center;
-
           justify-content: center;
 
           flex-shrink: 0;
@@ -731,134 +771,171 @@ export default function Suppliers() {
           color: #00ff88;
 
           background:
-            rgba(0,255,136,.07);
+            rgba(0,255,136,0.065);
 
           border:
-            1px solid rgba(0,255,136,.11);
+            1px solid rgba(0,255,136,0.1);
 
-          font-size: 14px;
+          font-size: 12px;
+          font-weight: 800;
         }
 
-        .phone-cell {
+        .supplier-person-name {
+          color: #e8efea;
+          font-weight: 600;
+        }
+
+        .supplier-person-sub {
+          margin-top: 2px;
+
+          color: #536058;
+
+          font-size: 9px;
+        }
+
+        .supplier-phone {
           color: #9aa69f;
-
-          font-size: 12px;
         }
 
-        .address-cell {
-          color: #87948d;
-
-          font-size: 12px;
+        .supplier-address {
+          color: #849089;
         }
 
-        .loading-state,
-        .empty-state {
-          padding: 60px 20px;
+        /* ================================
+           STATES
+        ================================= */
+
+        .supplier-state {
+          padding: 55px 20px;
 
           text-align: center;
 
           color: #66736c;
 
-          font-size: 13px;
+          font-size: 12px;
         }
 
-        .loading-spinner {
-          width: 28px;
-          height: 28px;
+        .loading-circle {
+          width: 27px;
+          height: 27px;
 
           margin: 0 auto 12px;
 
           border-radius: 50%;
 
           border:
-            2px solid rgba(0,255,136,.12);
+            2px solid rgba(0,255,136,0.1);
 
-          border-top-color: #00ff88;
+          border-top-color:
+            #00ff88;
 
           animation:
-            supplierSpin .7s linear infinite;
+            supplierLoading 0.7s linear infinite;
         }
 
-        @keyframes supplierSpin {
+        @keyframes supplierLoading {
           to {
             transform: rotate(360deg);
           }
         }
 
-        .empty-icon {
-          font-size: 32px;
+        .empty-symbol {
+          width: 48px;
+          height: 48px;
 
-          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
-          opacity: .5;
+          margin: 0 auto 12px;
+
+          border-radius: 14px;
+
+          color: #00ff88;
+
+          background:
+            rgba(0,255,136,0.05);
+
+          border:
+            1px solid rgba(0,255,136,0.08);
+
+          font-size: 20px;
         }
 
-        /* RESPONSIVE */
+        /* ================================
+           RESPONSIVE
+        ================================= */
 
-        @media (max-width: 1000px) {
+        @media (max-width: 1050px) {
           .supplier-form {
-            grid-template-columns:
-              1fr
-              1fr;
+            grid-template-columns: 1fr 1fr;
           }
 
-          .add-button {
+          .submit-supplier {
             width: 100%;
           }
         }
 
-        @media (max-width: 700px) {
-          .supplier-summary {
+        @media (max-width: 750px) {
+          .supplier-stats {
             grid-template-columns: 1fr;
+          }
+
+          .supplier-header {
+            align-items: flex-start;
+          }
+
+          .top-add-btn {
+            display: none;
           }
 
           .supplier-form {
             grid-template-columns: 1fr;
           }
 
-          .table-toolbar {
+          .table-header {
             align-items: flex-start;
-
             flex-direction: column;
           }
 
-          .search-box {
+          .supplier-search {
             width: 100%;
           }
         }
 
         @media (max-width: 480px) {
-          .suppliers-header h1 {
-            font-size: 23px;
+          .supplier-heading h1 {
+            font-size: 22px;
           }
 
-          .suppliers-icon {
-            width: 45px;
-            height: 45px;
-
-            font-size: 20px;
+          .supplier-heading-icon {
+            width: 44px;
+            height: 44px;
+            font-size: 19px;
           }
 
-          .supplier-form-panel {
-            padding: 16px;
+          .supplier-form-card {
+            padding: 15px;
           }
 
-          .summary-card {
-            padding: 17px;
+          .supplier-table th,
+          .supplier-table td {
+            padding-left: 13px;
+            padding-right: 13px;
           }
         }
+
       `}</style>
 
       <Layout>
         <div className="suppliers-page">
 
           {/* HEADER */}
+          <div className="supplier-header">
 
-          <header className="suppliers-header">
+            <div className="supplier-heading">
 
-            <div className="suppliers-title">
-
-              <div className="suppliers-icon">
+              <div className="supplier-heading-icon">
                 🚚
               </div>
 
@@ -866,74 +943,79 @@ export default function Suppliers() {
                 <h1>Suppliers</h1>
 
                 <p>
-                  Manage and organize your business
-                  suppliers.
+                  Manage your suppliers and contact information
                 </p>
               </div>
 
             </div>
 
-          </header>
+            <button
+              className="top-add-btn"
+              onClick={() =>
+                document
+                  .querySelector(".supplier-form-card")
+                  ?.scrollIntoView({
+                    behavior: "smooth",
+                  })
+              }
+            >
+              + Add Supplier
+            </button>
 
-          {/* SUMMARY */}
+          </div>
 
-          <div className="supplier-summary">
+          {/* STATISTICS */}
+          <div className="supplier-stats">
 
-            <div className="summary-card">
+            <div className="supplier-stat">
 
-              <div className="summary-top">
-
-                <span className="summary-label">
+              <div className="stat-top">
+                <span className="stat-title">
                   Total Suppliers
                 </span>
 
-                <span className="summary-icon">
+                <span className="stat-icon">
                   👥
                 </span>
-
               </div>
 
-              <div className="summary-value">
+              <div className="stat-value">
                 {suppliers.length}
               </div>
 
             </div>
 
-            <div className="summary-card">
+            <div className="supplier-stat">
 
-              <div className="summary-top">
-
-                <span className="summary-label">
+              <div className="stat-top">
+                <span className="stat-title">
                   Active Records
                 </span>
 
-                <span className="summary-icon">
+                <span className="stat-icon">
                   ✓
                 </span>
-
               </div>
 
-              <div className="summary-value green">
+              <div className="stat-value green">
                 {suppliers.length}
               </div>
 
             </div>
 
-            <div className="summary-card">
+            <div className="supplier-stat">
 
-              <div className="summary-top">
-
-                <span className="summary-label">
+              <div className="stat-top">
+                <span className="stat-title">
                   Search Results
                 </span>
 
-                <span className="summary-icon">
+                <span className="stat-icon">
                   ⌕
                 </span>
-
               </div>
 
-              <div className="summary-value">
+              <div className="stat-value">
                 {filteredSuppliers.length}
               </div>
 
@@ -942,10 +1024,9 @@ export default function Suppliers() {
           </div>
 
           {/* MESSAGE */}
-
           {message.text && (
             <div
-              className={`message ${message.type}`}
+              className={`supplier-message ${message.type}`}
             >
               {message.type === "success"
                 ? "✓ "
@@ -956,26 +1037,20 @@ export default function Suppliers() {
           )}
 
           {/* ADD SUPPLIER */}
+          <div className="supplier-form-card">
 
-          <div className="supplier-form-panel">
+            <div className="form-header">
 
-            <div className="panel-heading">
-
-              <span className="panel-heading-icon">
-                ＋
-              </span>
+              <div className="form-header-icon">
+                +
+              </div>
 
               <div>
-
-                <h3>
-                  Add New Supplier
-                </h3>
+                <h3>Add New Supplier</h3>
 
                 <p>
-                  Enter supplier contact
-                  information below.
+                  Enter supplier details to create a new record
                 </p>
-
               </div>
 
             </div>
@@ -985,40 +1060,38 @@ export default function Suppliers() {
               onSubmit={addSupplier}
             >
 
-              <div className="field">
+              {/* NAME */}
+              <div className="form-field">
 
-                <label>
-                  SUPPLIER NAME
-                </label>
+                <label>SUPPLIER NAME</label>
 
-                <div className="input-wrapper">
+                <div className="input-container">
 
-                  <span className="field-icon">
+                  <span className="input-symbol">
                     👤
                   </span>
 
                   <input
                     className="supplier-input"
                     name="supplier_name"
-                    required
                     value={form.supplier_name}
                     onChange={handleChange}
-                    placeholder="Enter supplier name"
+                    placeholder="Supplier name"
+                    required
                   />
 
                 </div>
 
               </div>
 
-              <div className="field">
+              {/* PHONE */}
+              <div className="form-field">
 
-                <label>
-                  PHONE
-                </label>
+                <label>PHONE NUMBER</label>
 
-                <div className="input-wrapper">
+                <div className="input-container">
 
-                  <span className="field-icon">
+                  <span className="input-symbol">
                     ☎
                   </span>
 
@@ -1027,22 +1100,21 @@ export default function Suppliers() {
                     name="phone"
                     value={form.phone}
                     onChange={handleChange}
-                    placeholder="Enter phone number"
+                    placeholder="Phone number"
                   />
 
                 </div>
 
               </div>
 
-              <div className="field">
+              {/* ADDRESS */}
+              <div className="form-field">
 
-                <label>
-                  ADDRESS
-                </label>
+                <label>ADDRESS</label>
 
-                <div className="input-wrapper">
+                <div className="input-container">
 
-                  <span className="field-icon">
+                  <span className="input-symbol">
                     📍
                   </span>
 
@@ -1051,63 +1123,56 @@ export default function Suppliers() {
                     name="address"
                     value={form.address}
                     onChange={handleChange}
-                    placeholder="Enter address"
+                    placeholder="Supplier address"
                   />
 
                 </div>
 
               </div>
 
+              {/* BUTTON */}
               <button
-                className="add-button"
+                className="submit-supplier"
                 type="submit"
                 disabled={adding}
               >
                 {adding
                   ? "Adding..."
-                  : "＋ Add Supplier"}
+                  : "+ Add Supplier"}
               </button>
 
             </form>
 
           </div>
 
-          {/* TABLE */}
+          {/* SUPPLIER TABLE */}
+          <div className="supplier-table-card">
 
-          <div className="supplier-table-panel">
+            <div className="table-header">
 
-            <div className="table-toolbar">
+              <div className="table-heading">
 
-              <div className="table-title">
-
-                <span className="table-title-icon">
+                <span className="table-heading-icon">
                   ◈
                 </span>
 
                 <div>
 
-                  <h3>
-                    Supplier Directory
-                  </h3>
+                  <h3>Supplier Directory</h3>
 
-                  <span>
-                    {filteredSuppliers.length}
-                    {" "}
-                    suppliers displayed
-                  </span>
+                  <p>
+                    {filteredSuppliers.length} suppliers displayed
+                  </p>
 
                 </div>
 
               </div>
 
-              <div className="search-box">
+              <div className="supplier-search">
 
-                <span className="search-icon">
-                  ⌕
-                </span>
+                <span>⌕</span>
 
                 <input
-                  className="search-input"
                   value={search}
                   onChange={(e) =>
                     setSearch(e.target.value)
@@ -1119,20 +1184,20 @@ export default function Suppliers() {
 
             </div>
 
-            <div className="table-wrap">
+            <div className="supplier-table-wrapper">
 
               {loading ? (
-                <div className="loading-state">
+                <div className="supplier-state">
 
-                  <div className="loading-spinner"></div>
+                  <div className="loading-circle"></div>
 
                   Loading suppliers...
 
                 </div>
               ) : filteredSuppliers.length === 0 ? (
-                <div className="empty-state">
+                <div className="supplier-state">
 
-                  <div className="empty-icon">
+                  <div className="empty-symbol">
                     🚚
                   </div>
 
@@ -1145,57 +1210,74 @@ export default function Suppliers() {
                 <table className="supplier-table">
 
                   <thead>
-
                     <tr>
                       <th>ID</th>
                       <th>Supplier</th>
                       <th>Phone</th>
                       <th>Address</th>
                     </tr>
-
                   </thead>
 
                   <tbody>
 
-                    {filteredSuppliers.map(
-                      (supplier) => (
+                    {filteredSuppliers.map((supplier) => {
+
+                      const initials =
+                        supplier.supplier_name
+                          ?.split(" ")
+                          .map((word) => word[0])
+                          .join("")
+                          .substring(0, 2)
+                          .toUpperCase() || "SU";
+
+                      return (
                         <tr key={supplier.id}>
 
                           <td>
-                            <span className="id-badge">
+                            <span className="supplier-id">
                               #{supplier.id}
                             </span>
                           </td>
 
                           <td>
 
-                            <div className="supplier-name">
+                            <div className="supplier-person">
 
-                              <span className="supplier-avatar">
-                                👤
-                              </span>
+                              <div className="supplier-avatar">
+                                {initials}
+                              </div>
 
-                              {supplier.supplier_name}
+                              <div>
+
+                                <div className="supplier-person-name">
+                                  {supplier.supplier_name}
+                                </div>
+
+                                <div className="supplier-person-sub">
+                                  Supplier
+                                </div>
+
+                              </div>
 
                             </div>
 
                           </td>
 
                           <td>
-                            <span className="phone-cell">
+                            <span className="supplier-phone">
                               {supplier.phone || "—"}
                             </span>
                           </td>
 
                           <td>
-                            <span className="address-cell">
+                            <span className="supplier-address">
                               {supplier.address || "—"}
                             </span>
                           </td>
 
                         </tr>
-                      )
-                    )}
+                      );
+                    })}
 
                   </tbody>
 
@@ -1211,4 +1293,3 @@ export default function Suppliers() {
     </>
   );
 }
-```
