@@ -1,4 +1,20 @@
 import axios from "axios";
-const api=axios.create({baseURL:"http://localhost:5000/api"});
-api.interceptors.request.use(c=>{const t=localStorage.getItem("token");if(t)c.headers.authorization=t;return c});
+
+const api = axios.create({
+  baseURL: "https://delightful-illumination-production-6b4e.up.railway.app/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
 export default api;
