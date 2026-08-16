@@ -121,4 +121,8 @@ app.post("/api/sales",auth,(req,res)=>{
   });
 });
 
-app.listen(process.env.PORT||5000,()=>console.log(`✅ Server Running On Port ${process.env.PORT||5000}`));
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server Running On Port ${PORT}`);
+});
