@@ -1,2 +1,43 @@
-import{useEffect,useState}from"react";import{Package,Tags,Truck,ShoppingCart}from"lucide-react";import api from"../services/api";import Layout from"../components/Layout";
-export default function Dashboard(){const[s,setS]=useState({});useEffect(()=>{api.get("/dashboard").then(r=>setS(r.data)).catch(()=>{})},[]);const cards=[["Products",s.products,Package],["Categories",s.categories,Tags],["Suppliers",s.suppliers,Truck],["Sales",s.sales,ShoppingCart]];return <Layout><header><div><h1>Dashboard</h1><p>Welcome back to your inventory.</p></div></header><div className="cards">{cards.map(([n,v,I])=><div className="stat" key={n}><I/><span>{n}</span><strong>{v??0}</strong></div>)}</div><div className="panel"><h2>Stock Overview</h2><p>Total items in stock: <b>{s.stock??0}</b></p><p>Total users: <b>{s.users??0}</b></p><p>Total sales value: <b>{Number(s.sales??0).toLocaleString()} RWF</b></p></div></Layout>}
+export default function Dashboard() {
+  return (
+    <div className="dashboard-page">
+
+      <div className="page-header">
+        <div>
+          <h1>Dashboard</h1>
+
+          <p>
+            Welcome back to your inventory.
+          </p>
+        </div>
+      </div>
+
+      <div className="overview-header">
+        <h2>Overview</h2>
+      </div>
+
+      <div className="stats-grid">
+
+        <div className="stat-card">
+          <span>Total Items</span>
+          <strong>0</strong>
+          <small>Items in stock</small>
+        </div>
+
+        <div className="stat-card">
+          <span>Total Users</span>
+          <strong>0</strong>
+          <small>Registered users</small>
+        </div>
+
+        <div className="stat-card">
+          <span>Total Sales</span>
+          <strong>0 RWF</strong>
+          <small>Total sales value</small>
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
