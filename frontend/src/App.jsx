@@ -1,5 +1,5 @@
 ```jsx
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -7,119 +7,142 @@ import Products from "./pages/Products";
 import Categories from "./pages/Categories";
 import Suppliers from "./pages/Suppliers";
 import Sales from "./pages/Sales";
+import Navbar from "./components/Navbar";
+
+/*
+|--------------------------------------------------------------------------
+| Layout
+|--------------------------------------------------------------------------
+| Navbar igaragara kuri pages za system.
+| Login yo nta Navbar igira.
+*/
+
+function Layout({ children }) {
+  const location = useLocation();
+
+  const isLoginPage = location.pathname === "/login";
+
+  return (
+    <div className="app-layout">
+      {!isLoginPage && <Navbar />}
+
+      <main className={!isLoginPage ? "main-content" : ""}>
+        {children}
+      </main>
+    </div>
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
+| App
+|--------------------------------------------------------------------------
+*/
 
 export default function App() {
   return (
     <Routes>
 
-      {/* HOME */}
+      {/* =====================================================
+          HOME
+          Website ifunguka kuri Dashboard
+      ===================================================== */}
       <Route
         path="/"
-        element={<Navigate to="/dashboard" replace />}
+        element={
+          <Navigate
+            to="/dashboard"
+            replace
+          />
+        }
       />
 
-      {/* LOGIN */}
+      {/* =====================================================
+          LOGIN
+      ===================================================== */}
       <Route
         path="/login"
-        element={<Login />}
+        element={
+          <Layout>
+            <Login />
+          </Layout>
+        }
       />
 
-      {/* DASHBOARD */}
+      {/* =====================================================
+          DASHBOARD
+      ===================================================== */}
       <Route
         path="/dashboard"
-        element={<Dashboard />}
+        element={
+          <Layout>
+            <Dashboard />
+          </Layout>
+        }
       />
 
-      {/* PRODUCTS */}
+      {/* =====================================================
+          PRODUCTS
+      ===================================================== */}
       <Route
         path="/products"
-        element={<Products />}
+        element={
+          <Layout>
+            <Products />
+          </Layout>
+        }
       />
 
-      {/* CATEGORIES */}
+      {/* =====================================================
+          CATEGORIES
+      ===================================================== */}
       <Route
         path="/categories"
-        element={<Categories />}
+        element={
+          <Layout>
+            <Categories />
+          </Layout>
+        }
       />
 
-      {/* SUPPLIERS */}
+      {/* =====================================================
+          SUPPLIERS
+      ===================================================== */}
       <Route
         path="/suppliers"
-        element={<Suppliers />}
+        element={
+          <Layout>
+            <Suppliers />
+          </Layout>
+        }
       />
 
-      {/* SALES */}
+      {/* =====================================================
+          SALES
+      ===================================================== */}
       <Route
         path="/sales"
-        element={<Sales />}
+        element={
+          <Layout>
+            <Sales />
+          </Layout>
+        }
       />
 
-      {/* UNKNOWN */}
+      {/* =====================================================
+          UNKNOWN URL
+      ===================================================== */}
       <Route
         path="*"
-        element={<Navigate to="/dashboard" replace />}
+        element={
+          <Navigate
+            to="/dashboard"
+            replace
+          />
+        }
       />
 
     </Routes>
-  );
-}
-```
-
-**Nakuyeho `Protected`** kugira ngo gukanda pages bigende nta token.
-
----
-
-### 2. Koresha `NavLink` muri Sidebar/Navbar
-
-Muri `components/Navbar.jsx` cyangwa Sidebar yawe, ntukoreshe:
-
-```jsx
-<a href="/products">Products</a>
-```
-
-Koresha:
-
-```jsx
-import { NavLink, useNavigate } from "react-router-dom";
-
-export default function Navbar() {
-  const navigate = useNavigate();
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
-    navigate("/dashboard", { replace: true });
-  };
-
-  return (
-    <nav className="navbar">
-
-      <NavLink to="/dashboard">
-        Dashboard
-      </NavLink>
-
-      <NavLink to="/products">
-        Products
-      </NavLink>
-
-      <NavLink to="/categories">
-        Categories
-      </NavLink>
-
-      <NavLink to="/suppliers">
-        Suppliers
-      </NavLink>
-
-      <NavLink to="/sales">
-        Sales
-      </NavLink>
-
-      <button onClick={logout}>
-        Logout
-      </button>
-
-    </nav>
   );
 }
 ```
